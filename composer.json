@@ -1,0 +1,32 @@
+{
+    "name": "trecenode/filament-mermaid-field",
+    "description": "Filament Mermaid Field",
+    "version": "1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Trecenode\\FilamentMermaidField\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Trecenode\\FilamentMermaidField\\FilamentMermaidFieldServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Danilo Ulloa",
+            "email": "info@13node.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0|^8.1",
+        "spatie/laravel-package-tools": "^1.13.0"
+    },
+    "require-dev": {
+
+    }
+}
