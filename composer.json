@@ -1,7 +1,7 @@
 {
     "name": "trecenode/filament-mermaid-field",
     "description": "Filament Mermaid Field",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "type": "library",
     "license": "MIT",
     "autoload": {
