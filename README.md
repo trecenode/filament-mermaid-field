@@ -5,38 +5,47 @@ A custom field for Filament that allows creating and visualizing Mermaid diagram
 ## Features
 
 - ✨ Integrated text editor with Filament
-- 🖼️ Real-time Mermaid diagram rendering  
-- 🔍 Interactive zoom and pan using local files
-- 🌙 Light and dark theme support
+- 🖼️ Real-time Mermaid diagram rendering
+- 🔍 Interactive zoom and pan
+- 🌙 Follows the Filament light/dark theme
+- 🌍 Translatable interface (English and Spanish bundled)
 - 📱 Responsive design
-- 🚀 Easy Livewire integration
+- 🚀 Livewire 4 / Alpine integration
+
+## Requirements
+
+| | Version |
+|---|---|
+| PHP | 8.2+ |
+| Laravel | 11, 12 or 13 |
+| Filament | 5.x |
+
+For Filament 3 use version `2.x` of this package.
 
 ## Installation
-
-1. Install the package:
 
 ```bash
 composer require trecenode/filament-mermaid-field
 ```
 
-2. Publish the assets:
+The field's CSS and the `svg-pan-zoom` script are registered as Filament assets. Publish them like any other Filament package asset:
 
 ```bash
-php artisan vendor:publish --tag=filament-mermaid-field-assets
+php artisan filament:assets
 ```
 
-This will copy the CSS and JavaScript files to your public directory.
+Mermaid itself is loaded on demand from the jsDelivr CDN (`mermaid@11`), only on pages that actually render the field.
 
 ## Usage
 
-### In your Resource or Form
+### In your Resource or Schema
 
 ```php
 use Trecenode\FilamentMermaidField\FilamentMermaidField;
 
 FilamentMermaidField::make('diagram_content')
     ->label('Mermaid Diagram')
-    ->placeholder('graph TD\n    A[Start] --> B[Process]\n    B --> C[End]')
+    ->placeholder("graph TD\n    A[Start] --> B[Process]\n    B --> C[End]")
     ->rows(10)
 ```
 
@@ -49,30 +58,52 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Trecenode\FilamentMermaidField\FilamentMermaidField;
 
 class DiagramResource extends Resource
 {
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                
+
                 FilamentMermaidField::make('content')
                     ->label('Diagram Content')
-                    ->placeholder('graph TD\n    A[Start] --> B{Condition?}\n    B -->|Yes| C[Process A]\n    B -->|No| D[Process B]\n    C --> E[End]\n    D --> E')
+                    ->placeholder("graph TD\n    A[Start] --> B{Condition?}\n    B -->|Yes| C[Process A]\n    B -->|No| D[Process B]")
                     ->rows(15)
                     ->required(),
-                    
+
                 Forms\Components\Textarea::make('description')
                     ->label('Description')
                     ->rows(3),
             ]);
     }
 }
+```
+
+`FilamentMermaidField` extends `Filament\Forms\Components\Textarea`, so every textarea method (`autosize()`, `maxLength()`, `disabled()`, …) is available.
+
+## Translations
+
+The field's own UI strings (layout toggle button, empty state, render error) follow your app locale. English (`en`) and Spanish (`es`) ship with the package.
+
+To customize them or add another language, publish the language files:
+
+```bash
+php artisan vendor:publish --tag=filament-mermaid-field-translations
+```
+
+They land in `lang/vendor/filament-mermaid-field/{locale}/mermaid-field.php`.
+
+The field `label` and `placeholder` are yours to translate as usual:
+
+```php
+FilamentMermaidField::make('content')
+    ->label(__('diagram.content'))
 ```
 
 ## Mermaid Diagram Examples
@@ -111,24 +142,25 @@ classDiagram
 
 ## Development
 
-### Local Development Setup
-
-1. Clone the repository
-2. Run `composer install`
-3. Install assets:
-
 ```bash
-php artisan vendor:publish --tag=filament-mermaid-field-assets
+composer install
+composer test
+```
+
+The suite boots a Testbench app with Filament and renders the field through a Livewire component.
 
 ### Project Structure
 
 - `src/` - PHP source code
-- `resources/views/` - Blade views
-- `resources/js/` - JavaScript source files  
-- `resources/css/` - CSS source files
+- `resources/views/` - Blade view
+- `resources/lang/` - Language files
+- `resources/js/` - `svg-pan-zoom`
+- `resources/css/` - Field stylesheet
+- `tests/` - Testbench test suite
 
 ## Changelog
 
+* **3.0** - Laravel 13 and Filament 5 support, translatable UI (en/es), Alpine-based rendering, assets registered through Filament, mermaid 11, svg-pan-zoom 3.6.2, test suite
 * **1.1** - Local assets support, UI/UX improvements, Filament asset integration
 * **1.0** - First version, only works if row is called "content"
 
@@ -136,7 +168,7 @@ php artisan vendor:publish --tag=filament-mermaid-field-assets
 
 -   [Danilo Ulloa](https://github.com/trecenode)
 -   [Mermaid.js](https://mermaid.js.org/) - Diagram library
--   [svg-pan-zoom](https://github.com/ariutta/svg-pan-zoom) - Pan and zoom functionality
+-   [svg-pan-zoom](https://github.com/bumbu/svg-pan-zoom) - Pan and zoom functionality
 
 ## License
 
